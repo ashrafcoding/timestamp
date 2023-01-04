@@ -24,8 +24,18 @@ app.get("/api/hello", function (req, res) {
 });
 
 // the date endpoint
-app.get("/api/:date", function (req, res) {
-  const date = new Date(req.params.date);
+app.get("/api/:date?", function (req, res) {
+  const dateStr = req.params.date;
+  let date = isNaN(Number(dateStr))
+    ? new Date(dateStr)
+    : new Date(Number(dateStr));
+  if (dateStr === undefined) {
+    date = new Date();
+  }
+  if (date == "Invalid Date") {
+    res.json({ error: "Invalid Date" });
+    return;
+  }
   const utcDate = new Date(
     Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
   ).toUTCString();
