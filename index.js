@@ -31,13 +31,19 @@ app.get("/api/:date?", function (req, res) {
     : new Date(Number(dateStr));
   if (dateStr === undefined) {
     date = new Date();
-  }
-  if (date == "Invalid Date") {
+  } else if (date == "Invalid Date") {
     res.json({ error: "Invalid Date" });
     return;
   }
   const utcDate = new Date(
-    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getUTCHours(),
+      date.getMinutes(),
+      date.getSeconds()
+    )
   ).toUTCString();
   res.json({ unix: date.getTime(), utc: utcDate });
 });
