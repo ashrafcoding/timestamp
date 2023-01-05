@@ -23,29 +23,23 @@ app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
 });
 
-// the date endpoint
 app.get("/api/:date?", function (req, res) {
   const dateStr = req.params.date;
   let date = isNaN(Number(dateStr))
     ? new Date(dateStr)
     : new Date(Number(dateStr));
   if (dateStr === undefined) {
-    date = new Date();
+    const unix = new Date().getTime();
+    const utc = new Date(unix).toUTCString();
+    res.json({ unix, utc });
+    return;
   } else if (date == "Invalid Date") {
     res.json({ error: "Invalid Date" });
     return;
   }
-  const utcDate = new Date(
-    Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      date.getUTCHours(),
-      date.getMinutes(),
-      date.getSeconds()
-    )
-  ).toUTCString();
-  res.json({ unix: date.getTime(), utc: utcDate });
+  const unix = date.getTime();
+  const utcDate = date.toUTCString();
+  res.json({ unix, utc: utcDate });
 });
 
 // listen for requests :)
